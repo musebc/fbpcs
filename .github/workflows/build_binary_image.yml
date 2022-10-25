@@ -1,5 +1,5 @@
 name: Build and Publish Binary Image
-run-name: Build ${{ inputs.image_to_build }} Image
+run-name: Build ${{ inputs.image_to_build }} Image on ${{ inputs.tag }} branch
 
 on:
   workflow_call:
