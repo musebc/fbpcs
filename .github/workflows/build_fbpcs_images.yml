@@ -2,7 +2,9 @@ name: Build and Publish Data Processing and EMP Games Docker Images
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - 'main'
+      - 'hotfix/**'
 
 env:
   FBPCF_VERSION: 2.1.79  # Please also update line 29 in .github/workflows/docker-publish.yml
@@ -18,22 +20,36 @@ jobs:
       - id: set_version
         run: echo "version=${{ env.FBPCF_VERSION }}" >> $GITHUB_OUTPUT
 
+  output_tag:
+    runs-on: ubuntu-latest
+    name: Set Image Tag
+    outputs:
+      tag: ${{ steps.set_tag.outputs.tag }}
+    steps:
+      - id: set_tag
+        run: |
+          TAG="main"
+          if [ ${{ github.ref_name }} != "main" ]; then
+            TAG="hotfix"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
   build_and_publish_data_processing_image:
     name: Build and Publish Data Processing Image
-    needs: output_version
+    needs: [output_version, output_tag]
     uses: ./.github/workflows/build_binary_image.yml
     with:
       image_to_build: data_processing
-      tag: main
-      fbpcf_version: ${{needs.output_version.outputs.fbpcf_version}}
+      tag: ${{ needs.output_tag.outputs.tag }}
+      fbpcf_version: ${{ needs.output_version.outputs.fbpcf_version }}
       push_to_registry: true
 
   build_and_publish_emp_games_image:
     name: Build and Publish EMP Games Image
-    needs: output_version
+    needs: [output_version, output_tag]
     uses: ./.github/workflows/build_binary_image.yml
     with:
       image_to_build: emp_games
-      tag: main
-      fbpcf_version: ${{needs.output_version.outputs.fbpcf_version}}
+      tag: ${{ needs.output_tag.outputs.tag }}
+      fbpcf_version: ${{ needs.output_version.outputs.fbpcf_version }}
       push_to_registry: true
