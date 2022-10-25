@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/build_binary_image.yml
     with:
       image_to_build: data_processing
-      tag: latest
+      tag: main
       fbpcf_version: ${{needs.output_version.outputs.fbpcf_version}}
       push_to_registry: true
 
@@ -34,6 +34,6 @@ jobs:
     uses: ./.github/workflows/build_binary_image.yml
     with:
       image_to_build: emp_games
-      tag: latest
+      tag: main
       fbpcf_version: ${{needs.output_version.outputs.fbpcf_version}}
       push_to_registry: true

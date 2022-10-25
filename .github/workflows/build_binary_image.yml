@@ -1,4 +1,5 @@
 name: Build and Publish Binary Image
+run-name: Build ${{ inputs.image_to_build }} Image
 
 on:
   workflow_call:
@@ -36,7 +37,7 @@ env:
 jobs:
   build_image:
     name: Build Image
-    runs-on: [self-hosted, fbpcs-build]
+    runs-on: ubuntu-20.04
     permissions:
       contents: write
       packages: write
@@ -72,6 +73,7 @@ jobs:
           file: docker/${{ inputs.image_to_build }}/Dockerfile.ubuntu
           tags: |
             ${{ env.RC_REGISTRY_IMAGE_URL }}${{ inputs.image_to_build }}:${{ github.sha }}
+            ${{ env.RC_REGISTRY_IMAGE_URL }}${{ inputs.image_to_build }}:${{ inputs.tag }}
           build-args: |
             tag=latest
             os_release=20.04
