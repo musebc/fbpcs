@@ -21,6 +21,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Print Tracker Hash
+        run: echo ${{ inputs.tracker_hash }}
+
       - name: Add tag to commit
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.0
