@@ -1,0 +1,30 @@
+name: Tag Bundle Commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: "The bundle id to tag the commit on main with"
+        required: true
+        type: string
+      tracker_hash:
+        description: "[Internal usage] Used for tracking workflow job status within Meta infra"
+        required: false
+        type: string
+
+jobs:
+  tag_main:
+    runs-on: ubuntu-latest
+    name: Tag main with bundle id
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Add tag to commit
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ inputs.bundle_id }}
+          tag_prefix: ""
